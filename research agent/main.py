@@ -6,6 +6,7 @@ import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain.agents import create_agent
+from tools import search_tool
 
 load_dotenv()
 
@@ -56,12 +57,21 @@ You will also need to provide the sources of the information and the tools used 
 Wrap the output in this format and provide no other text.
 """
 
+tools = [search_tool]
 agent = create_agent(
     model=llm,
-    tools=[],
+    tools=tools,
     system_prompt=system_prompt_text
 )
 
 # Invoke the agent directly (new API uses messages format)
 raw_response = agent.invoke({"messages": [("human", "Explain the history of Greek mythology")]})
-print(raw_response)
+
+
+try:
+    structured_response = parser.parse(raw_response.get("output")[0]["text"])
+    print(structured_response)
+except Exception as e:
+    print(f"Error parsing response: {e}")
+    structured_response = None
+
