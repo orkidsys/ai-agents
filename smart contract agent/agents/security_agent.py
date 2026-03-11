@@ -6,11 +6,11 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 import sys
 import os
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from schemas import Finding, SpecialistReport, Severity, Category
 import json
 import re
-import os
 from typing import List
 
 

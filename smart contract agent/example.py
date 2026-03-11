@@ -51,7 +51,7 @@ def example_file_path():
     sample_path = os.path.join(UPLOADS, "Sample.sol")
     if not os.path.isfile(sample_path):
         os.makedirs(UPLOADS, exist_ok=True)
-        with open(sample_path, "w") as f:
+        with open(sample_path, "w", encoding="utf-8") as f:
             f.write("""
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;

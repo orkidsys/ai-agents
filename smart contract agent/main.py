@@ -6,12 +6,18 @@ a structured audit report. Accepts a file path (e.g. uploaded contract) or raw s
 """
 from dotenv import load_dotenv
 import os
-import json
+import sys
+
+# Ensure agent root is on path when run from any directory
+_AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if _AGENT_DIR not in sys.path:
+    sys.path.insert(0, _AGENT_DIR)
+
 from typing import Optional, List, Tuple
 from datetime import datetime
 
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, ToolMessage
+from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 
 from schemas import (
     AuditReport,
@@ -146,7 +152,7 @@ class SmartContractAuditor:
         contract_name: str,
         specialist_reports: List[SpecialistReport],
         findings: List[Finding],
-    ) -> tuple[str, str, List[str]]:
+    ) -> Tuple[str, str, List[str]]:
         """Compute overall risk level, executive summary, and top recommendations."""
         critical = sum(1 for f in findings if f.severity == Severity.CRITICAL)
         high = sum(1 for f in findings if f.severity == Severity.HIGH)
@@ -171,8 +177,8 @@ class SmartContractAuditor:
 
         recs: List[str] = []
         for f in findings:
-            if f.severity in (Severity.CRITICAL, Severity.HIGH) and f.recommendation:
-                recs.append(f"[{f.severity.value}] {f.title}: {f.recommendation[:200]}")
+            if f.severity in (Severity.CRITICAL, Severity.HIGH) and (f.recommendation or "").strip():
+                recs.append(f"[{f.severity.value}] {f.title}: {(f.recommendation or '')[:200]}")
         recs = recs[:10]
         if not recs and findings:
             recs = [f.recommendation for f in findings[:5] if f.recommendation]
@@ -201,11 +207,11 @@ class SmartContractAuditor:
             response = llm_with_tools.invoke(messages)
             if not getattr(response, "tool_calls", None):
                 return {
-                    "response": response.content,
+                    "response": getattr(response, "content", None) or "",
                     "messages": messages + [response],
                 }
             for tc in response.tool_calls:
-                name = tc.get("name") or tc.get("name", "")
+                name = tc.get("name", "")
                 args = tc.get("args") or {}
                 tool = next((t for t in all_tools if t.name == name), None)
                 if not tool:
@@ -265,8 +271,10 @@ Always run all four specialist audits for an intensive audit. Be thorough and st
             print(f"    Category: {f.category.value} | Agent: {f.agent_source}")
             if f.location:
                 print(f"    Location: {f.location}")
-            print(f"    {f.description[:200]}...")
-            print(f"    Recommendation: {f.recommendation[:150]}...")
+            desc = (f.description or "")[:200]
+            rec = (f.recommendation or "")[:150]
+            print(f"    {desc}{'...' if len(f.description or '') > 200 else ''}")
+            print(f"    Recommendation: {rec}{'...' if len(f.recommendation or '') > 150 else ''}")
             print()
         print("SPECIALIST SUMMARIES")
         print("-" * 70)
@@ -286,12 +294,20 @@ def main():
         if not os.path.isfile(path):
             path = sys.argv[1]  # try raw path
         print(f"Auditing: {path}")
-        report = auditor.audit(file_path=path, verbose=True)
-        auditor.print_report(report)
-        out_path = os.path.join(os.path.dirname(__file__), "audit_report.json")
-        with open(out_path, "w") as f:
-            f.write(report.model_dump_json(indent=2))
-        print(f"Report saved to {out_path}")
+        try:
+            report = auditor.audit(file_path=path, verbose=True)
+            auditor.print_report(report)
+            out_path = os.path.join(os.path.dirname(__file__), "audit_report.json")
+            with open(out_path, "w", encoding="utf-8") as f:
+                f.write(report.model_dump_json(indent=2))
+            print(f"Report saved to {out_path}")
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+            print("Usage: python main.py <file_path>   (e.g. uploads/Token.sol or Token.sol)")
+            sys.exit(1)
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
     else:
         # Example: audit inline source
         sample = """

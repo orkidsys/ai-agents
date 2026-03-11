@@ -74,6 +74,13 @@ class ReadContractFileTool(BaseTool):
     def _run(self, file_path: str) -> str:
         path = os.path.abspath(os.path.expanduser(file_path))
         if not os.path.isfile(path):
+            # Try relative to agent uploads directory
+            uploads_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+            path_under_uploads = os.path.join(uploads_dir, file_path.lstrip(os.sep))
+            path_under_uploads = os.path.normpath(path_under_uploads)
+            if os.path.isfile(path_under_uploads):
+                path = path_under_uploads
+        if not os.path.isfile(path):
             return f"Error: File not found: {path}"
         try:
             with open(path, "r", encoding="utf-8", errors="replace") as f:
