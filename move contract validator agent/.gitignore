@@ -1,0 +1,7 @@
+.env
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+move_validation_report.json

@@ -35,3 +35,6 @@ Fetches and analyzes web pages via LangChain tools, with **multiple LLM backends
 ## General Assistant Agent
 A general-purpose conversational assistant with the same **multi-provider LLM** setup, plus small tools for **current time** (IANA timezones) and **safe arithmetic**—a simple base you can extend with more tools.
 
+## Move Contract Validator Agent
+Validates **Move** modules (Aptos / Sui aware) using **four specialist agents**—security, logic, gas/storage, and standards/compliance—and merges their findings into a single structured report with overall risk and recommendations.
+
