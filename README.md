@@ -32,3 +32,6 @@ Generates speech audio from text with support for different person personas (voi
 ## Web Scraping Agent
 Fetches and analyzes web pages via LangChain tools, with **multiple LLM backends** (OpenAI, Anthropic/Claude, Google Gemini, Vertex AI)—not locked to a single vendor.
 
+## General Assistant Agent
+A general-purpose conversational assistant with the same **multi-provider LLM** setup, plus small tools for **current time** (IANA timezones) and **safe arithmetic**—a simple base you can extend with more tools.
+
