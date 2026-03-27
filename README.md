@@ -41,6 +41,9 @@ Drafts empathetic, action-oriented customer support replies, classifies issues f
 ## Meeting Notes Agent
 Turns raw meeting notes into concise summaries with decisions, action items, and risk highlights to make follow-through easier.
 
+## Email Triage Agent
+Classifies inbound emails, estimates urgency, drafts a professional reply, and suggests concrete next actions (with optional structured JSON output).
+
 ## Move Contract Validator Agent
 Validates **Move** modules (Aptos / Sui aware) using **four specialist agents**—security, logic, gas/storage, and standards/compliance—and merges their findings into a single structured report with overall risk and recommendations.
 
