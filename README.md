@@ -47,6 +47,9 @@ Classifies inbound emails, estimates urgency, drafts a professional reply, and s
 ## Technical Documentation Agent
 Turns rough notes into structured technical writing (README, API docs, runbooks, changelogs, ADRs) with outline and changelog helper tools and optional structured JSON output.
 
+## Interview Prep Agent
+Helps candidates practice behavioral (STAR), technical, and high-level design interview prompts with sample talking points, drills, and delivery tips—without inventing the user’s experience.
+
 ## Move Contract Validator Agent
 Validates **Move** modules (Aptos / Sui aware) using **four specialist agents**—security, logic, gas/storage, and standards/compliance—and merges their findings into a single structured report with overall risk and recommendations.
 
