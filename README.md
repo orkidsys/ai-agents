@@ -12,6 +12,18 @@ These agents run **sequential specialist LLM phases** (with context passed forwa
 ### Incident Response Agent (Advanced)
 **Triage → Technical → Comms → Synthesis:** stabilization-oriented steps, engineering actions, internal/external drafts, and a consolidated `IncidentResponseReport`. Optional **chat** mode for playbooks. See `incident response agent/README.md` (`python main.py --run`).
 
+### Complex multi-phase agents (5 LLM steps + JSON)
+
+These add **longer orchestration** (five specialist passes plus a final structured artifact):
+
+| Agent | Phases | CLI | Output schema |
+|--------|--------|-----|----------------|
+| **ADR Pipeline** | Context → Options → Evaluation → Decision narrative → JSON | `adr pipeline agent/` — `python main.py --pipeline` | `ADRReport` |
+| **Threat Modeling** | Scope → Assets → STRIDE → Mitigations → JSON | `threat modeling agent/` — `python main.py --pipeline` | `ThreatModelReport` |
+| **GTM Launch** | ICP → Positioning → Channels → Timeline → JSON | `gtm launch agent/` — `python main.py --pipeline` | `GTMLaunchReport` |
+
+Each folder has a **chat** mode with reference tools and the same multi-provider `llm_factory` pattern as other agents.
+
 ## Research Agent
 Built with LangChain to perform multi-source research and synthesize results into structured summaries with sources.
 
